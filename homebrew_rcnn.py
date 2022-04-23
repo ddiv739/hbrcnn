@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd 
 import cv2 
 import os 
+import time
 
 class HBRCNN():
 
@@ -15,8 +16,7 @@ class HBRCNN():
                             tf.keras.layers.experimental.preprocessing.Resizing(self.required_in_dims[0],self.required_in_dims[1]),
                             tf.keras.layers.experimental.preprocessing.Rescaling(1./255.)
                         ])
-
-
+    
     def draw_annotate(self,img,x,y,w,h,preds):
         pts = np.array([
             (x,y),#TL
@@ -45,6 +45,7 @@ class HBRCNN():
         if type(input_fp) != str:
             raise Exception('Sorry, one image filepath at a time for this implementation. Maybe next time! :) ') 
         
+        start = time.time()
         img = cv2.imread(input_fp)
 
         #Do a colour correction
@@ -76,10 +77,9 @@ class HBRCNN():
             #     continue
             self.draw_annotate(img,x,y,w,h,preds[0])
 
+        print(f'Total processing time: {time.time()-start}s or eq: {1/(time.time()-start)} FPS')
         cv2.imshow('asdf',img)
         cv2.waitKey()
-
-
 
 
 if __name__ == '__main__':
